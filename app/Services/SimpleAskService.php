@@ -110,27 +110,57 @@ class SimpleAskService
     {
         $model = $model ?? self::DEFAULT_MODEL;
         
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->apiKey,
-            'Content-Type' => 'application/json',
-            'HTTP-Referer' => config('app.url'),
-            'X-Title' => config('app.name'),
-        ])
-            ->timeout(120)
-            ->post($this->baseUrl . '/chat/completions', [
-                'model' => $model,
-                'messages' => [[
+        $payload = [
+            'model' => $model,
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => 'Tu es un assistant qui génère des titres courts et concis pour des conversations. Réponds UNIQUEMENT avec le titre, sans guillemets, sans markdown, sans formatage supplémentaire. Maximum 8 mots.',
+                ],
+                [
                     'role' => 'user',
                     'content' => "Génère un titre court pour cette conversation : \"$firstMessage\"",
-                ]],
-                'max_tokens' => 30,
+                ],
+            ],
+            'temperature' => 0.7,
+        ];
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
+                'HTTP-Referer' => config('app.url'),
+                'X-Title' => config('app.name'),
+            ])
+                ->timeout(60)
+                ->post($this->baseUrl . '/chat/completions', $payload);
+
+            if ($response->failed()) {
+                $errorMessage = $response->json('error.message', 'Erreur API inconnue');
+                \Log::error('Erreur génération titre', [
+                    'error' => $errorMessage,
+                    'status' => $response->status(),
+                ]);
+                throw new \RuntimeException("Erreur API: {$errorMessage}");
+            }
+
+            $title = trim(strip_tags($response->json('choices.0.message.content', '')));
+       
+            // Si le titre est vide, utiliser un fallback
+            if (empty($title)) {
+                return \Illuminate\Support\Str::limit($firstMessage, 50);
+            }
+            
+            return $title;
+        } catch (\Exception $e) {
+            \Log::error('Exception génération titre', [
+                'message' => $e->getMessage(),
+                'model' => $model,
             ]);
-
-        if ($response->failed()) {
-            throw new \RuntimeException('Erreur lors de la génération du titre');
+            
+            // Fallback sur les premiers mots du message
+            return \Illuminate\Support\Str::limit($firstMessage, 50);
         }
-
-        return trim($response->json('choices.0.message.content', ''));
     }
 
     /**
@@ -140,14 +170,17 @@ class SimpleAskService
      */
     private function getSystemPrompt(): array
     {
-        $user = auth()->user()?->name ?? 'l\'utilisateur';
+        $user = auth()->user();
+        $userName = $user?->name ?? 'l\'utilisateur';
+        $instructions = $user?->instructions ?? '';
         $now = now()->locale('fr')->format('l d F Y H:i');
 
         return [
             'role' => 'system',
             'content' => view('prompts.system', [
                 'now' => $now,
-                'user' => $user,
+                'user' => $userName,
+                'instructions' => $instructions,
             ])->render(),
         ];
     }

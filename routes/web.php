@@ -5,7 +5,9 @@ use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\AskController;
 use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\InstructionController;
 use App\Http\Controllers\MessageController;
+use App\Models\Conversation;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -14,7 +16,10 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
+    $nbrConversations = Conversation::where('user_id', auth()->id())->count();
+    return Inertia::render('Dashboard', [
+        'nbrConversations' => $nbrConversations,
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function() {
@@ -24,5 +29,6 @@ Route::middleware('auth')->group(function() {
 
 Route::resource('conversations', ConversationController::class)->middleware('auth');
 Route::resource('messages', MessageController::class)->middleware('auth');
+Route::resource('instructions', InstructionController::class)->middleware('auth');
 
 require __DIR__.'/settings.php';

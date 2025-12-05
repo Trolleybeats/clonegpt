@@ -93,9 +93,15 @@ class ConversationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Conversation $conversation)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+        ]);
+
+        $conversation->update($validated);
+
+        return redirect()->route('conversations.index');
     }
 
     /**

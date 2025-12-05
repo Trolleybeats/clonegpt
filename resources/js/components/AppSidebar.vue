@@ -33,12 +33,17 @@ const mainNavItems: NavItem[] = [
         href: '/conversations/create',
         icon: BookOpen,
     },
+    {
+        title: 'Instructions',
+        href: '/instructions',
+        icon: LayoutGrid,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
     {
         title: 'Github Repo',
-        href: 'https://github.com/laravel/vue-starter-kit',
+        href: 'https://github.com/Trolleybeats/clonegpt',
         icon: Folder,
     },
     {

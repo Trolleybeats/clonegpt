@@ -102,7 +102,7 @@ class MessageController extends Controller
             return $askService->generateTitle($firstMessage, $model);
         } catch (\Exception $e) {
             // Si ça échoue, on utilise les premiers mots du message
-            return \Illuminate\Support\Str::limit($firstMessage, 50);
+            return \Illuminate\Support\Str::limit($firstMessage, 150);
         }
     }
 
