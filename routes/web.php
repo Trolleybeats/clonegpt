@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\AskController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\InstructionController;
 use App\Http\Controllers\MessageController;
@@ -30,5 +31,8 @@ Route::middleware('auth')->group(function() {
 Route::resource('conversations', ConversationController::class)->middleware('auth');
 Route::resource('messages', MessageController::class)->middleware('auth');
 Route::resource('instructions', InstructionController::class)->middleware('auth');
+
+Route::post('/chat/{conversation}/stream', [ChatController::class, 'sendMessageStream'])
+    ->name('chat.stream')->middleware('auth');
 
 require __DIR__.'/settings.php';

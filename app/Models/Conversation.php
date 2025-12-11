@@ -25,4 +25,8 @@ class Conversation extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getTemperature(){
+        return 0.7; // Valeur par défaut, peut être modifiée selon les besoins
+    }
 }

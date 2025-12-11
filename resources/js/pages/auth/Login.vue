@@ -7,16 +7,34 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import AuthBase from '@/layouts/AuthLayout.vue';
-import { register } from '@/routes';
-import { store } from '@/routes/login';
+import { login, register } from '@/routes';
 import { request } from '@/routes/password';
-import { Form, Head } from '@inertiajs/vue3';
+import { Form, Head, useForm } from '@inertiajs/vue3';
+
+const form = useForm({
+    email: '',
+    password: '',
+    remember: false,
+});
 
 defineProps<{
     status?: string;
     canResetPassword: boolean;
     canRegister: boolean;
 }>();
+
+const submit = () => {
+    form.transform((data) => ({
+        ...data,
+        remember: form.remember ? 'on' : '',
+    })).post(login(), {
+        onFinish: () => form.reset('password'),
+        onSuccess: () => {
+            // 🔥 Rechargement pour token CSRF frais après login
+            window.location.reload();
+        },
+    });
+};
 </script>
 
 <template>
@@ -34,7 +52,7 @@ defineProps<{
         </div>
 
         <Form
-            v-bind="store.form()"
+            @submit.prevent="submit"
             :reset-on-success="['password']"
             v-slot="{ errors, processing }"
             class="flex flex-col gap-6"
@@ -46,6 +64,7 @@ defineProps<{
                         id="email"
                         type="email"
                         name="email"
+                        v-model="form.email"
                         required
                         autofocus
                         :tabindex="1"
@@ -71,6 +90,7 @@ defineProps<{
                         id="password"
                         type="password"
                         name="password"
+                        v-model="form.password"
                         required
                         :tabindex="2"
                         autocomplete="current-password"
@@ -81,7 +101,12 @@ defineProps<{
 
                 <div class="flex items-center justify-between">
                     <Label for="remember" class="flex items-center space-x-3">
-                        <Checkbox id="remember" name="remember" :tabindex="3" />
+                        <Checkbox
+                            id="remember"
+                            name="remember"
+                            v-model:checked="form.remember"
+                            :tabindex="3"
+                        />
                         <span>Remember me</span>
                     </Label>
                 </div>
