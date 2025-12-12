@@ -20,11 +20,6 @@ class SimpleAskService
 
     private string $apiKey;
     private string $baseUrl;
-    /**
-     * Optional SDK client that can produce StreamedResponse
-     * (e.g., OpenRouter PHP SDK with chat()->createStreamed()).
-     */
-    private $client = null;
 
     public function __construct($client = null)
     {
@@ -65,6 +60,7 @@ class SimpleAskService
                     'input_modalities' => $model['architecture']['input_modalities'] ?? [],
                     'output_modalities' => $model['architecture']['output_modalities'] ?? [],
                     'supported_parameters' => $model['supported_parameters'] ?? [],
+                    'supports_image' => 'text+image->text' === $model['architecture']['modality'],
                 ])
                 ->values()
                 ->toArray()
@@ -95,7 +91,7 @@ class SimpleAskService
             'HTTP-Referer' => config('app.url'),
             'X-Title' => config('app.name'),
         ])
-            ->timeout(120)
+            ->timeout(60)
             ->post($this->baseUrl . '/chat/completions', [
                 'model' => $model,
                 'messages' => $messages,
@@ -192,175 +188,5 @@ class SimpleAskService
                 'instructions' => $instructions,
             ])->render(),
         ];
-    }
-
-    /**
-     * Version streaming qui retourne un générateur de chunks texte.
-     * Adapte l'appel OpenRouter pour lire le flux SSE et extraire le contenu.
-     *
-     * @param array<int, array{role: 'assistant'|'system'|'tool'|'user', content: mixed}> $messages
-     * @return \Generator<string>
-     */
-    /**
-     * Version streaming retournant un StreamedResponse (SSE) si un client SDK est disponible,
-     * sinon fallback en lisant le flux SSE via Http et en émettant les chunks.
-     *
-     * @param array<int, array{role: 'assistant'|'system'|'tool'|'user', content: mixed}> $messages
-     */
-    public function stream(array $messages, ?string $model = null, float $temperature = 0.7): StreamedResponse
-    {
-        try {
-            Log::info('Envoi du message en streaming', [
-                'model' => $model,
-                'temperature' => $temperature,
-            ]);
-
-            $models = collect($this->getModels());
-            if (!$model || !$models->contains('id', $model)) {
-                $model = self::DEFAULT_MODEL;
-                Log::info('Modèle par défaut utilisé:', ['model' => $model]);
-            }
-
-            $messages = [$this->getSystemPrompt(), ...$messages];
-
-            // If an SDK client is available and supports createStreamed, use it to return a StreamedResponse
-            if ($this->client && method_exists($this->client, 'chat')) {
-                $chat = $this->client->chat();
-                if ($chat && method_exists($chat, 'createStreamed')) {
-                    /** @var StreamedResponse $stream */
-                    $stream = $chat->createStreamed([
-                        'model' => $model,
-                        'messages' => $messages,
-                        'temperature' => $temperature,
-                        'stream' => true,
-                    ]);
-                    return $stream;
-                }
-            }
-
-            // Fallback: manual SSE streaming via Laravel StreamedResponse
-            $payload = [
-                'model' => $model,
-                'messages' => $messages,
-                'temperature' => $temperature,
-                'stream' => true,
-            ];
-
-            return new StreamedResponse(function () use ($payload) {
-                $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . $this->apiKey,
-                    'Content-Type' => 'application/json',
-                    'HTTP-Referer' => config('app.url'),
-                    'X-Title' => config('app.name'),
-                ])->send('POST', $this->baseUrl . '/chat/completions', [
-                    'body' => json_encode($payload),
-                    'stream' => true,
-                    'timeout' => 120,
-                ]);
-
-                $body = $response->toPsrResponse()->getBody();
-
-                while (!$body->eof()) {
-                    $line = $body->read(1024);
-                    foreach (preg_split('/\r?\n/', $line) as $l) {
-                        $l = trim($l);
-                        if (!str_starts_with($l, 'data:')) {
-                            continue;
-                        }
-                        $json = trim(substr($l, 5));
-                        if ($json === '[DONE]') {
-                            break;
-                        }
-                        try {
-                            $parsed = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-                            $delta = $parsed['choices'][0]['delta']['content'] ?? '';
-                            if ($delta !== '') {
-                                echo $delta;
-                                flush();
-                            }
-                        } catch (\Throwable $t) {
-                            // ignore invalid lines
-                        }
-                    }
-                }
-            }, 200, [
-                'Content-Type' => 'text/event-stream',
-                'Cache-Control' => 'no-cache, no-transform',
-                'X-Accel-Buffering' => 'no',
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Erreur dans sendMessageStream:', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-            throw $e;
-        }
-    }
-
-    /**
-     * Version streaming qui renvoie un générateur de chunks texte.
-     * Lit le flux SSE et extrait uniquement le contenu textuel.
-     *
-     * @param array<int, array{role: 'assistant'|'system'|'tool'|'user', content: mixed}> $messages
-     * @return \Generator<string>
-     */
-    public function streamChunks(array $messages, ?string $model = null, float $temperature = 0.7): \Generator
-    {
-        $models = collect($this->getModels());
-        if (!$model || !$models->contains('id', $model)) {
-            $model = self::DEFAULT_MODEL;
-        }
-
-        $payload = [
-            'model' => $model,
-            'messages' => [$this->getSystemPrompt(), ...$messages],
-            'temperature' => $temperature,
-            'stream' => true,
-        ];
-
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->apiKey,
-            'Content-Type' => 'application/json',
-            'HTTP-Referer' => config('app.url'),
-            'X-Title' => config('app.name'),
-        ])->send('POST', $this->baseUrl . '/chat/completions', [
-            'body' => json_encode($payload),
-            'stream' => true,
-            'timeout' => 120,
-        ]);
-
-        $body = $response->toPsrResponse()->getBody();
-        $buffer = '';
-
-        while (!$body->eof()) {
-            $chunk = $body->read(1024);
-            if ($chunk === '') {
-                continue;
-            }
-            $buffer .= $chunk;
-
-            while (false !== ($pos = strpos($buffer, "\n"))) {
-                $line = trim(substr($buffer, 0, $pos));
-                $buffer = substr($buffer, $pos + 1);
-
-                if ($line === '' || !str_starts_with($line, 'data:')) {
-                    continue;
-                }
-
-                $json = trim(substr($line, 5));
-                if ($json === '[DONE]') {
-                    return; // end of stream
-                }
-                try {
-                    $parsed = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-                    $delta = $parsed['choices'][0]['delta']['content'] ?? '';
-                    if ($delta !== '') {
-                        yield $delta;
-                    }
-                } catch (\Throwable $t) {
-                    // Skip malformed lines
-                }
-            }
-        }
     }
 }

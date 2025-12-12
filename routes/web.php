@@ -32,7 +32,4 @@ Route::resource('conversations', ConversationController::class)->middleware('aut
 Route::resource('messages', MessageController::class)->middleware('auth');
 Route::resource('instructions', InstructionController::class)->middleware('auth');
 
-Route::post('/chat/{conversation}/stream', [ChatController::class, 'sendMessageStream'])
-    ->name('chat.stream')->middleware('auth');
-
 require __DIR__.'/settings.php';

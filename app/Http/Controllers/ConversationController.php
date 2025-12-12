@@ -51,15 +51,16 @@ class ConversationController extends Controller
             'user_id' => auth()->id(),
             'model' => $validated['model'],
         ]);
-
-        // Rediriger d'abord vers la vue show avec un prefill
-        // afin que l'UI démarre le stream du premier message
-        return redirect()
-            ->route('conversations.show', $conversation)
-            ->with('prefill', [
-                'text' => $validated['content'],
-                'model' => $validated['model'],
-            ]);
+        
+        // Créer le premier message et obtenir la réponse
+        $messageController = app(\App\Http\Controllers\MessageController::class);
+        
+        $request->merge(['conversation_id' => $conversation->id]);
+        
+        $messageController->store($request);
+        
+        // Rediriger vers la vue show de la conversation
+        return redirect()->route('conversations.show', $conversation);
     }
 
     /**
@@ -78,8 +79,6 @@ class ConversationController extends Controller
             'conversation' => $conversation,
             'models' => app(\App\Services\SimpleAskService::class)->getModels(),
             'selectedModel' => $selectedModel,
-            // Permet d'auto-démarrer le stream si on arrive depuis create
-            'prefill' => session('prefill'),
         ]);
     }
 
