@@ -15,10 +15,13 @@ import {
             <CardDescription class="mb-6">
                 Choisissez le plan qui vous convient le mieux.
             </CardDescription>
-            <div class="flex flex-row gap-4">
+            <div class="flex flex-col gap-4 lg:flex-row">
                 <Card class="m-4 p-8">
                     <CardTitle>Gratuit</CardTitle>
-                    <Button class="cursor-not-allowed opacity-40">
+                    <Button
+                        disabled
+                        class="cursor-default bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                    >
                         Plan actuel
                     </Button>
                     <CardDescription class="text-black">

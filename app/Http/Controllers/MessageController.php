@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MessageController extends Controller
 {
@@ -28,69 +29,53 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
+        // Mode "stream finish": on reçoit user_content + assistant_content et on persiste uniquement
         $validated = $request->validate([
-            'content' => 'required|string',
             'conversation_id' => 'required|integer|exists:conversations,id',
+            'user_content' => 'required|string',
+            'assistant_content' => 'required|string',
             'model' => 'required|string',
         ]);
 
         $conversation = \App\Models\Conversation::with('messages')->findOrFail($validated['conversation_id']);
-        $user = auth()->user();
-        
-        // Sauvegarder le modèle sélectionné
+        $user = Auth::user();
+
+        // Mettre à jour le modèle choisi
         $conversation->update(['model' => $validated['model']]);
-        $user->update(['preferred_model' => $validated['model']]);
-        
-        // Préparer l'historique des messages pour l'API AVANT d'ajouter le nouveau
-        $messages = $conversation->messages->map(fn($msg) => [
-            'role' => $msg->role,
-            'content' => $msg->content,
-        ])->toArray();
-        
-        // Ajouter le nouveau message utilisateur à l'historique
-        $messages[] = [
-            'role' => 'user',
-            'content' => $validated['content'],
-        ];
-        
-        // Sauvegarder le message de l'utilisateur en DB
-        $userMessage = Message::create([
-            'content' => $validated['content'],
+        if ($user) {
+            $user->update(['preferred_model' => $validated['model']]);
+        }
+
+        // Sauvegarder le message utilisateur
+        Message::create([
+            'content' => $validated['user_content'],
             'conversation_id' => $validated['conversation_id'],
             'role' => 'user',
         ]);
 
-        $response = null;
-        $error = null;
+        // Sauvegarder la réponse (contenu déjà nettoyé côté client)
+        Message::create([
+            'content' => $validated['assistant_content'],
+            'conversation_id' => $validated['conversation_id'],
+            'role' => 'assistant',
+        ]);
 
-        try {
-            // Envoyer à l'API
-            $askService = app(\App\Services\SimpleAskService::class);
-            $response = $askService->sendMessage(
-                messages: $messages,
-                model: $validated['model']
-            );
-
-            // Sauvegarder la réponse de l'assistant
-            Message::create([
-                'content' => $response,
-                'conversation_id' => $validated['conversation_id'],
-                'role' => 'assistant',
-            ]);
-            
-            // Générer un titre automatiquement si c'est le premier message
-            if ($conversation->messages()->count() === 2 && 
-                (empty($conversation->title) || $conversation->title === 'Nouvelle conversation')) {
-                $title = $this->generateTitle($askService, $validated['content'], $validated['model']);
+        // Générer un titre si c'est le premier échange
+        if ($conversation->messages()->count() === 2 && (empty($conversation->title) || $conversation->title === 'Nouvelle conversation')) {
+            try {
+                $askService = app(\App\Services\SimpleAskService::class);
+                $title = $this->generateTitle($askService, $validated['user_content'], $validated['model']);
                 $conversation->update(['title' => $title]);
+            } catch (\Exception $e) {
+                $fallback = \Illuminate\Support\Str::limit($validated['user_content'], 150);
+                $conversation->update(['title' => $fallback]);
             }
-        } catch (\Exception $e) {
-            $error = $e->getMessage();
         }
 
-        $conversation->touch(); // Met à jour updated_at
-        
-        return redirect()->back();
+        $conversation->touch();
+
+        // Réponse JSON pour les appels fetch()
+        return response()->json(['status' => 'ok']);
     }
     
     /**

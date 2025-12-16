@@ -18,6 +18,7 @@ defineProps<Props>();
         viewBox="0 0 800 752"
         :class="className"
         v-bind="$attrs"
+        alt="App logo - icon homme qui court"
     >
         <g transform="translate(0,752) scale(0.1,-0.1)" fill="currentColor">
             <path

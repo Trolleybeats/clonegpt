@@ -25,7 +25,6 @@ class SimpleAskService
     {
         $this->apiKey = config('services.openrouter.api_key');
         $this->baseUrl = rtrim(config('services.openrouter.base_url', 'https://openrouter.ai/api/v1'), '/');
-        $this->client = $client;
     }
 
     /**
@@ -91,7 +90,7 @@ class SimpleAskService
             'HTTP-Referer' => config('app.url'),
             'X-Title' => config('app.name'),
         ])
-            ->timeout(60)
+            ->timeout(120)
             ->post($this->baseUrl . '/chat/completions', [
                 'model' => $model,
                 'messages' => $messages,
@@ -137,7 +136,7 @@ class SimpleAskService
                 'HTTP-Referer' => config('app.url'),
                 'X-Title' => config('app.name'),
             ])
-                ->timeout(60)
+                ->timeout(120)
                 ->post($this->baseUrl . '/chat/completions', $payload);
 
             if ($response->failed()) {

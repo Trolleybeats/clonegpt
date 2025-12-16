@@ -1,8 +1,7 @@
 <script setup>
 import { store } from '@/actions/App/Http/Controllers/InstructionController';
-import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { Loader } from 'lucide-vue-next';
 
 const props = defineProps({
@@ -24,9 +23,16 @@ const submit = () => {
 </script>
 
 <template>
+    <Head>
+        <title>Instructions - CloneGPT</title>
+        <meta
+            name="description"
+            content="Gérez vos instructions personnalisées pour guider le comportement de l'IA dans CloneGPT."
+        />
+    </Head>
     <AppLayout>
         <div class="p-4 text-white">
-            <h1 class="mb-4 text-2xl font-bold">Instructions</h1>
+            <h1 class="mb-4 text-2xl">Instructions</h1>
             <p>
                 Bienvenue dans la section des instructions. Ici, vous pouvez
                 ajouter des instructions personnalisées pour guider le
@@ -70,22 +76,26 @@ const submit = () => {
                     </li>
                 </ul>
             </div>
-            <div class="relative">
+            <div class="relative mb-4 text-white">
                 <textarea
                     v-model="form.instructions"
                     id="comportement"
-                    class="w-full rounded border bg-[#1B1B1E] p-2 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    class="w-full rounded-lg border border-[#2A2A2F] bg-[#1B1B1E] p-3 pr-28 text-white placeholder:text-[#8A8A8F] focus:ring-2 focus:ring-[#C8FF2E]/60 focus:outline-none"
                     rows="6"
                     placeholder="Décrivez ici le comportement souhaité de l'IA..."
                     :disabled="form.processing"
                 ></textarea>
-                <Button
+                <button
+                    type="submit"
                     :disabled="form.processing || !form.instructions.trim()"
-                    class="absolute right-2 bottom-6 bg-[#FF3B30] hover:bg-[#C8FF2E] hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                    class="absolute right-2 bottom-2 inline-flex items-center gap-2 rounded-lg bg-[#FF3B30] px-4 py-2 text-white transition-colors hover:bg-[#C8FF2E] hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                    <Loader v-if="form.processing" class="animate-spin" />
+                    <Loader
+                        v-if="form.processing"
+                        class="h-4 w-4 animate-spin"
+                    />
                     <span v-else>Envoyer</span>
-                </Button>
+                </button>
             </div>
         </form>
     </AppLayout>

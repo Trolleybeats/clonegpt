@@ -25,7 +25,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
         <Head title="Password settings" />
 
         <SettingsLayout>
-            <div class="space-y-6">
+            <div class="space-y-6 text-white">
                 <HeadingSmall
                     title="Update password"
                     description="Ensure your account is using a long, random password to stay secure"

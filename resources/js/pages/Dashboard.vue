@@ -18,7 +18,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head
+        title="Dashboard"
+        description="Vue d'ensemble de vos statistiques sur CloneGPT."
+    />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

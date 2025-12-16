@@ -1,4 +1,5 @@
 <script setup>
+import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -17,7 +18,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { router } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css'; // ou un autre thème
 import MarkdownIt from 'markdown-it';
@@ -89,11 +90,18 @@ const renameConversation = () => {
 </script>
 
 <template>
+    <Head>
+        <title>Conversations - CloneGPT</title>
+        <meta
+            name="description"
+            content="Gérez vos conversations avec CloneGPT. Créez, renommez ou supprimez vos discussions facilement."
+        />
+    </Head>
     <AppLayout>
         <div class="mx-auto max-w-3xl px-4 py-6">
             <div class="w-full">
                 <div class="flex">
-                    <h1 class="mb-6 flex-1 text-2xl font-bold text-white">
+                    <h1 class="mb-6 flex-1 text-2xl text-white">
                         Conversations
                     </h1>
                     <Button
@@ -111,10 +119,13 @@ const renameConversation = () => {
                     >
                         <a
                             :href="`/conversations/${conversation.id}`"
-                            class="flex flex-row rounded border p-4 pr-60 pl-60 text-white hover:bg-gray-700"
+                            class="flex flex-col gap-3 rounded border px-4 py-4 text-white hover:bg-gray-700 sm:flex-row sm:items-center sm:px-6 md:px-10 lg:px-16 xl:px-24"
                         >
+                            <AppLogoIcon
+                                class="h-8 w-8 fill-white stroke-white text-white sm:mr-4"
+                            />
                             <div class="flex-1">
-                                <h2 class="text-lg font-semibold">
+                                <h2 class="text-lg">
                                     {{
                                         conversation.title ||
                                         'Untitled Conversation'

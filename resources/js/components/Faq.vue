@@ -31,6 +31,22 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
                     des conversations en utilisant les options disponibles à
                     côté de chaque conversation dans la liste.
                 </li>
+                <li>
+                    <strong>Q :</strong> Comment puis-je gérer mes paramètres de
+                    compte ?
+                    <br />
+                    <strong>R :</strong> Accédez à la page des paramètres de
+                    votre compte en cliquant sur votre profil dans le coin
+                    supérieur droit.
+                </li>
+                <li>
+                    <strong>Q :</strong> Puis-je personnaliser des instructions
+                    pour l'IA ?
+                    <br />
+                    <strong>R :</strong> Oui, vous pouvez définir des
+                    instructions personnalisées pour guider le comportement de
+                    l'IA dans chaque conversation.
+                </li>
             </ul>
         </CardContent>
     </Card>

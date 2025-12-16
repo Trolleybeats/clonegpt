@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import Cookie from '@/components/Cookie.vue';
 import Faq from '@/components/Faq.vue';
 import Pricing from '@/components/Pricing.vue';
 import Temoin from '@/components/Temoin.vue';
@@ -21,10 +22,29 @@ withDefaults(
     <Head title="Welcome">
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/apple-touch-icon.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/site.webmanifest" />
     </Head>
     <div
         class="flex min-h-screen flex-col items-center bg-[#1B1B1E] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]"
     >
+        <Cookie class="absolute right-0 bottom-0 left-0" />
         <header
             class="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl"
         >
@@ -56,9 +76,7 @@ withDefaults(
         <main class="w-full max-w-md text-center lg:max-w-2xl">
             <!--Hero-->
             <AppLogoIcon class="mx-auto mb-6 h-16 w-16 text-white" />
-            <h1
-                class="mb-6 text-4xl leading-tight font-bold text-white md:text-5xl"
-            >
+            <h1 class="mb-6 text-4xl leading-tight text-white md:text-5xl">
                 Bienvenue sur RunAI
             </h1>
             <p class="mb-6 text-lg text-white">
@@ -67,14 +85,15 @@ withDefaults(
             </p>
             <Button
                 as="a"
-                class="mb-4 self-end bg-[#FF3B30] hover:bg-[#C8FF2E] hover:text-black"
                 href="/conversations/create"
-                >Nouvelle Conversation
+                class="mb-4 self-end bg-[#FF3B30] text-white hover:bg-[#C8FF2E] hover:text-black"
+            >
+                Nouvelle Conversation
             </Button>
 
             <!--Section Fonctionnalités-->
             <article class="mb-6 text-left text-white">
-                <h2 class="mb-4 text-2xl font-bold">Fonctionnalités</h2>
+                <h2 class="mb-4 text-2xl">Fonctionnalités</h2>
                 <ul class="list-disc space-y-2 pl-5">
                     <li>
                         Discussions illimitées avec l'IA pour des conseils
@@ -105,16 +124,14 @@ withDefaults(
                     réservés.
                 </p>
 
-                <a
-                    href="politique.vue"
-                    class="ml-4 underline hover:text-gray-300"
+                <a href="/Politique" class="ml-4 underline hover:text-gray-300"
                     >Politique de confidentialité</a
                 >
-                <a href="mention.vue" class="ml-4 underline hover:text-gray-300"
+                <a href="/Mentions" class="ml-4 underline hover:text-gray-300"
                     >Mentions légales</a
                 >
-                <a href="act.vue" class="ml-4 underline hover:text-gray-300"
-                    >Conformité AI Act</a
+                <a href="/Act" class="ml-4 underline hover:text-gray-300"
+                    >AI Act</a
                 >
             </footer>
         </main>

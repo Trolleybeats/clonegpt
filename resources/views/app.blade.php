@@ -3,7 +3,28 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="title" content="RunAI - AI chatbot pour la course à pied">
+        <meta name="description" content="Assistant IA personnel pour des programmes de course à pied personnalisés en quelques secondes.">
+
+        {{-- Open Graph defaults (override via $metaTitle, $metaDescription, $metaImage, $metaType, $metaUrl, $metaSiteName) --}}
+        @php
+            $og = [
+                'title' => $metaTitle ?? 'RunAI - AI chatbot pour la course à pied',
+                'description' => $metaDescription ?? 'Assistant IA personnel pour des programmes de course à pied personnalisés en quelques secondes.',
+                'type' => $metaType ?? 'website',
+                'url' => $metaUrl ?? url()->current(),
+                'image' => $metaImage ?? asset('apple-touch-icon.png'),
+                'site_name' => $metaSiteName ?? config('app.name', 'Laravel'),
+            ];
+        @endphp
+        <meta property="og:title" content="{{ $og['title'] }}">
+        <meta property="og:description" content="{{ $og['description'] }}">
+        <meta property="og:type" content="{{ $og['type'] }}">
+        <meta property="og:url" content="{{ $og['url'] }}">
+        <meta property="og:image" content="{{ $og['image'] }}">
+        <meta property="og:site_name" content="{{ $og['site_name'] }}">
+        <meta property="og:locale" content="{{ str_replace('_', '-', app()->getLocale()) }}">
 
         {{-- Inline script to detect system dark mode preference and apply it immediately --}}
         <script>

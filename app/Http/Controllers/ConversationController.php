@@ -11,7 +11,7 @@ class ConversationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Conversation $conversation)
+    public function index(Conversation $conversations)
     {
         $conversations = Conversation::where('user_id', auth()->id())
             ->orderBy('updated_at', 'desc')
@@ -51,16 +51,14 @@ class ConversationController extends Controller
             'user_id' => auth()->id(),
             'model' => $validated['model'],
         ]);
-        
-        // Créer le premier message et obtenir la réponse
-        $messageController = app(\App\Http\Controllers\MessageController::class);
-        
-        $request->merge(['conversation_id' => $conversation->id]);
-        
-        $messageController->store($request);
-        
-        // Rediriger vers la vue show de la conversation
-        return redirect()->route('conversations.show', $conversation);
+
+        // Rediriger vers la vue show avec le message initial pour lancer le stream
+        return redirect()->route('conversations.show', [
+            'conversation' => $conversation,
+            'initial' => $validated['content'],
+            'model' => $validated['model'],
+            'thinking' => 1,
+        ]);
     }
 
     /**
