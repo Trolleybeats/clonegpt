@@ -40,6 +40,7 @@ const submit = () => {
             <form @submit.prevent="submit">
                 <div class="relative mb-4 text-white">
                     <textarea
+                        dusk="content"
                         v-model="form.content"
                         placeholder="Écrire un message..."
                         class="w-full rounded-lg border border-[#2A2A2F] bg-[#1B1B1E] p-3 pr-28 text-white placeholder:text-[#8A8A8F] focus:ring-2 focus:ring-[#C8FF2E]/60 focus:outline-none"
@@ -48,6 +49,7 @@ const submit = () => {
                     <button
                         type="submit"
                         :disabled="form.processing || !form.content.trim()"
+                        dusk="send"
                         class="absolute right-2 bottom-2 inline-flex items-center gap-2 rounded-lg bg-[#FF3B30] px-4 py-2 text-white transition-colors hover:bg-[#C8FF2E] hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         <Loader

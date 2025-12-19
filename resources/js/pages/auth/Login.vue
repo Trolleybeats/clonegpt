@@ -29,10 +29,7 @@ const submit = () => {
         remember: form.remember ? 'on' : '',
     })).post(login(), {
         onFinish: () => form.reset('password'),
-        onSuccess: () => {
-            // 🔥 Rechargement pour token CSRF frais après login
-            window.location.reload();
-        },
+        // Let Fortify/Inertia handle redirects (e.g., /dashboard or 2FA)
     });
 };
 </script>

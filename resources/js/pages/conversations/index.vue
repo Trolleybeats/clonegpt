@@ -142,7 +142,11 @@ const renameConversation = () => {
                             </div>
                             <DropdownMenu class="self-end">
                                 <DropdownMenuTrigger @click.prevent>
-                                    <Button variant="ghost">•••</Button>
+                                    <Button
+                                        variant="ghost"
+                                        dusk="actions-trigger"
+                                        >•••</Button
+                                    >
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                     <DropdownMenuLabel
@@ -151,11 +155,13 @@ const renameConversation = () => {
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                         @click="openRenameDialog(conversation)"
+                                        dusk="rename-conversation"
                                         >Renommer</DropdownMenuItem
                                     >
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                         @click="openDeleteDialog(conversation)"
+                                        dusk="delete-conversation"
                                         >Supprimer</DropdownMenuItem
                                     >
                                 </DropdownMenuContent>
@@ -181,7 +187,11 @@ const renameConversation = () => {
                     <Button variant="outline" @click="deleteDialog = false">
                         Annuler
                     </Button>
-                    <Button variant="destructive" @click="deleteConversation">
+                    <Button
+                        variant="destructive"
+                        @click="deleteConversation"
+                        dusk="confirm-delete"
+                    >
                         Supprimer
                     </Button>
                 </DialogFooter>
@@ -206,6 +216,7 @@ const renameConversation = () => {
                         class="w-full rounded border p-2"
                         placeholder="Nouveau nom de la conversation"
                         @keyup.enter="renameConversation"
+                        dusk="rename-input"
                     />
                 </div>
                 <DialogFooter>
@@ -216,6 +227,7 @@ const renameConversation = () => {
                         variant="primary"
                         :disabled="!newTitle.trim()"
                         @click="renameConversation"
+                        dusk="confirm-rename"
                     >
                         Renommer
                     </Button>

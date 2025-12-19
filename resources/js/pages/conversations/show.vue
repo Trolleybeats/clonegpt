@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useStream } from '@/composables/useStream';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { useStream } from '@laravel/stream-vue';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css';
 import { Loader } from 'lucide-vue-next';
@@ -227,6 +227,7 @@ onMounted(() => {
                                     placeholder="Écrire un message..."
                                     class="w-full rounded-lg border border-[#2A2A2F] bg-[#1B1B1E] p-3 text-white placeholder:text-[#8A8A8F] focus:ring-2 focus:ring-[#C8FF2E]/60 focus:outline-none sm:p-2 sm:pr-28"
                                     rows="5"
+                                    dusk="content"
                                 ></textarea>
                                 <button
                                     type="submit"
@@ -236,6 +237,7 @@ onMounted(() => {
                                         !message.trim()
                                     "
                                     class="absolute right-2 bottom-2 hidden items-center gap-2 rounded-lg bg-[#FF3B30] px-4 py-2 text-white transition-colors hover:bg-[#C8FF2E] hover:text-black disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex"
+                                    dusk="send"
                                 >
                                     <Loader
                                         v-if="isStreaming"
@@ -253,6 +255,7 @@ onMounted(() => {
                                     <select
                                         v-model="model"
                                         class="w-full rounded-lg border border-[#2A2A2F] bg-[#1B1B1E] p-2 text-white focus:ring-2 focus:ring-[#C8FF2E]/60 focus:outline-none"
+                                        dusk="model-select"
                                     >
                                         <option
                                             v-for="m in props.models"
