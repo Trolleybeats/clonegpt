@@ -101,12 +101,12 @@ const renameConversation = () => {
         <div class="mx-auto max-w-3xl px-4 py-6">
             <div class="w-full">
                 <div class="flex">
-                    <h1 class="mb-6 flex-1 text-2xl text-white">
+                    <h1 class="mb-6 flex-1 text-2xl text-foreground">
                         Conversations
                     </h1>
                     <Button
                         as="a"
-                        class="mb-4 self-end bg-[#FF3B30] hover:bg-[#C8FF2E] hover:text-black"
+                        class="mb-4 self-end bg-primary text-white hover:bg-accent hover:text-foreground dark:bg-destructive dark:text-destructive-foreground dark:hover:bg-primary dark:hover:text-black"
                         href="/conversations/create"
                         >Nouvelle Conversation
                     </Button>
@@ -119,11 +119,9 @@ const renameConversation = () => {
                     >
                         <a
                             :href="`/conversations/${conversation.id}`"
-                            class="flex flex-col gap-3 rounded border px-4 py-4 text-white hover:bg-gray-700 sm:flex-row sm:items-center sm:px-6 md:px-10 lg:px-16 xl:px-24"
+                            class="flex flex-col gap-3 rounded border border-border px-4 py-4 text-foreground hover:bg-primary-soft sm:flex-row sm:items-center sm:px-6 md:px-10 lg:px-16 xl:px-24 dark:hover:bg-primary-soft"
                         >
-                            <AppLogoIcon
-                                class="h-8 w-8 fill-white stroke-white text-white sm:mr-4"
-                            />
+                            <AppLogoIcon class="h-8 w-8 text-primary sm:mr-4" />
                             <div class="flex-1">
                                 <h2 class="text-lg">
                                     {{
@@ -131,7 +129,7 @@ const renameConversation = () => {
                                         'Untitled Conversation'
                                     }}
                                 </h2>
-                                <p class="mt-2 text-sm text-white">
+                                <p class="mt-2 text-sm text-foreground">
                                     Dernier message le
                                     {{
                                         new Date(
@@ -170,6 +168,9 @@ const renameConversation = () => {
                     </li>
                     <li v-if="conversations.length < 1">Aucune conversation</li>
                 </ul>
+                <li v-if="conversations.length < 1" class="text-foreground">
+                    Aucune conversation
+                </li>
             </div>
         </div>
         <!-- Dialog de confirmation de suppression -->
@@ -213,7 +214,7 @@ const renameConversation = () => {
                     <input
                         v-model="newTitle"
                         type="text"
-                        class="w-full rounded border p-2"
+                        class="w-full rounded border border-border bg-background p-2 text-foreground"
                         placeholder="Nouveau nom de la conversation"
                         @keyup.enter="renameConversation"
                         dusk="rename-input"

@@ -25,7 +25,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
         <Head title="Password settings" />
 
         <SettingsLayout>
-            <div class="space-y-6 text-white">
+            <div class="space-y-6 text-foreground">
                 <HeadingSmall
                     title="Update password"
                     description="Ensure your account is using a long, random password to stay secure"
@@ -101,7 +101,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
                         >
                             <p
                                 v-show="recentlySuccessful"
-                                class="text-sm text-neutral-600"
+                                class="text-sm text-muted-foreground"
                             >
                                 Saved.
                             </p>

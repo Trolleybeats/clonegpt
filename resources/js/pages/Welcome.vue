@@ -42,7 +42,7 @@ withDefaults(
         <link rel="manifest" href="/site.webmanifest" />
     </Head>
     <div
-        class="flex min-h-screen flex-col items-center bg-[#1B1B1E] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]"
+        class="flex min-h-screen flex-col items-center bg-background p-6 text-foreground lg:justify-center lg:p-8"
     >
         <Cookie class="absolute right-0 bottom-0 left-0" />
         <header
@@ -52,21 +52,21 @@ withDefaults(
                 <Link
                     v-if="$page.props.auth.user"
                     :href="dashboard()"
-                    class="inline-block rounded-sm border border-white px-5 py-1.5 text-sm leading-normal text-white hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                    class="inline-block rounded-sm border border-border px-5 py-1.5 text-sm leading-normal text-foreground hover:border-gray-300"
                 >
                     Dashboard
                 </Link>
                 <template v-else>
                     <Link
                         :href="login()"
-                        class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-white hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
+                        class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-foreground hover:border-gray-300"
                     >
                         Se connecter
                     </Link>
                     <Link
                         v-if="canRegister"
                         :href="register()"
-                        class="inline-block rounded-sm border border-white px-5 py-1.5 text-sm leading-normal text-white hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                        class="inline-block rounded-sm border border-border px-5 py-1.5 text-sm leading-normal text-foreground hover:border-gray-300"
                     >
                         S'inscrire
                     </Link>
@@ -75,24 +75,24 @@ withDefaults(
         </header>
         <main class="w-full max-w-md text-center lg:max-w-2xl">
             <!--Hero-->
-            <AppLogoIcon class="mx-auto mb-6 h-16 w-16 text-white" />
-            <h1 class="mb-6 text-4xl leading-tight text-white md:text-5xl">
+            <AppLogoIcon class="mx-auto mb-6 h-16 w-16 text-primary" />
+            <h1 class="mb-6 text-4xl leading-tight text-foreground md:text-5xl">
                 Bienvenue sur RunAI
             </h1>
-            <p class="mb-6 text-lg text-white">
+            <p class="mb-6 text-lg text-foreground">
                 Votre assistant IA personnel pour des programmes de course à
                 pied personnalisés.
             </p>
             <Button
                 as="a"
                 href="/conversations/create"
-                class="mb-4 self-end bg-[#FF3B30] text-white hover:bg-[#C8FF2E] hover:text-black"
+                class="mb-4 self-end bg-primary text-white hover:bg-accent hover:text-foreground dark:bg-destructive dark:text-destructive-foreground dark:hover:bg-primary dark:hover:text-black"
             >
                 Nouvelle Conversation
             </Button>
 
             <!--Section Fonctionnalités-->
-            <article class="mb-6 text-left text-white">
+            <article class="mb-6 text-left text-foreground">
                 <h2 class="mb-4 text-2xl">Fonctionnalités</h2>
                 <ul class="list-disc space-y-2 pl-5">
                     <li>
@@ -118,19 +118,25 @@ withDefaults(
             <Faq />
 
             <!--Pied de page-->
-            <footer class="mt-12 text-sm text-white">
+            <footer class="mt-12 text-sm text-foreground">
                 <p>
                     &copy; {{ new Date().getFullYear() }} RunAI. Tous droits
                     réservés.
                 </p>
 
-                <a href="/Politique" class="ml-4 underline hover:text-gray-300"
+                <a
+                    href="/Politique"
+                    class="ml-4 underline hover:text-gray-500 dark:hover:text-primary"
                     >Politique de confidentialité</a
                 >
-                <a href="/Mentions" class="ml-4 underline hover:text-gray-300"
+                <a
+                    href="/Mentions"
+                    class="ml-4 underline hover:text-gray-500 dark:hover:text-primary"
                     >Mentions légales</a
                 >
-                <a href="/Act" class="ml-4 underline hover:text-gray-300"
+                <a
+                    href="/Act"
+                    class="ml-4 underline hover:text-gray-500 dark:hover:text-primary"
                     >AI Act</a
                 >
             </footer>

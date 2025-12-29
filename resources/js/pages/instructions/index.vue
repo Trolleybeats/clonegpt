@@ -31,8 +31,8 @@ const submit = () => {
         />
     </Head>
     <AppLayout>
-        <div class="p-4 text-white">
-            <h1 class="mb-4 text-2xl">Instructions</h1>
+        <div class="p-4 text-foreground">
+            <h1 class="mb-4 text-2xl text-primary">Instructions</h1>
             <p>
                 Bienvenue dans la section des instructions. Ici, vous pouvez
                 ajouter des instructions personnalisées pour guider le
@@ -48,17 +48,17 @@ const submit = () => {
         <form @submit.prevent="submit" class="px-4">
             <div
                 v-if="form.recentlySuccessful"
-                class="mb-4 rounded bg-green-500 p-3 text-white"
+                class="mb-4 rounded bg-accent p-3 text-accent-foreground"
             >
                 Instructions mises à jour avec succès !
             </div>
 
             <label
                 for="comportement"
-                class="mb-2 block font-semibold text-white"
+                class="mb-2 block font-semibold text-foreground"
                 >Comportement de l'IA :</label
             >
-            <div class="mb-2 text-white">
+            <div class="mb-2 text-foreground">
                 <h2>Suggestions d'instructions :</h2>
                 <ul class="list-disc pl-5">
                     <li>Sois concis et précis dans tes réponses.</li>
@@ -76,11 +76,11 @@ const submit = () => {
                     </li>
                 </ul>
             </div>
-            <div class="relative mb-4 text-white">
+            <div class="relative mb-4 text-foreground">
                 <textarea
                     v-model="form.instructions"
                     id="comportement"
-                    class="w-full rounded-lg border border-[#2A2A2F] bg-[#1B1B1E] p-3 pr-28 text-white placeholder:text-[#8A8A8F] focus:ring-2 focus:ring-[#C8FF2E]/60 focus:outline-none"
+                    class="w-full rounded-lg border border-border bg-background p-3 pr-28 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring/60 focus:outline-none"
                     rows="6"
                     placeholder="Décrivez ici le comportement souhaité de l'IA..."
                     :disabled="form.processing"
@@ -88,7 +88,7 @@ const submit = () => {
                 <button
                     type="submit"
                     :disabled="form.processing || !form.instructions.trim()"
-                    class="absolute right-2 bottom-2 inline-flex items-center gap-2 rounded-lg bg-[#FF3B30] px-4 py-2 text-white transition-colors hover:bg-[#C8FF2E] hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                    class="absolute right-2 bottom-2 inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-accent-foreground transition-colors hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-50 dark:bg-destructive dark:text-destructive-foreground dark:hover:bg-primary dark:hover:text-black"
                 >
                     <Loader
                         v-if="form.processing"

@@ -33,24 +33,24 @@ const submit = () => {
     </Head>
     <AppLayout>
         <div class="mx-auto mt-24 max-w-3xl px-4 py-6">
-            <h1 class="mb-6 text-2xl text-white">
-                <AppLogoIcon class="mr-2 inline-block h-8 w-8" />
+            <h1 class="mb-6 text-2xl text-foreground">
+                <AppLogoIcon class="mr-2 inline-block h-8 w-8 text-primary" />
                 Nouvelle Conversation
             </h1>
             <form @submit.prevent="submit">
-                <div class="relative mb-4 text-white">
+                <div class="relative mb-4 text-foreground">
                     <textarea
                         dusk="content"
                         v-model="form.content"
                         placeholder="Écrire un message..."
-                        class="w-full rounded-lg border border-[#2A2A2F] bg-[#1B1B1E] p-3 pr-28 text-white placeholder:text-[#8A8A8F] focus:ring-2 focus:ring-[#C8FF2E]/60 focus:outline-none"
+                        class="w-full rounded-lg border border-border bg-background p-3 pr-28 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring/60 focus:outline-none"
                         rows="5"
                     ></textarea>
                     <button
                         type="submit"
                         :disabled="form.processing || !form.content.trim()"
                         dusk="send"
-                        class="absolute right-2 bottom-2 inline-flex items-center gap-2 rounded-lg bg-[#FF3B30] px-4 py-2 text-white transition-colors hover:bg-[#C8FF2E] hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                        class="absolute right-2 bottom-2 inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-accent-foreground transition-colors hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-50 dark:bg-destructive dark:text-destructive-foreground dark:hover:bg-primary dark:hover:text-black"
                     >
                         <Loader
                             v-if="form.processing"
@@ -61,13 +61,13 @@ const submit = () => {
                 </div>
                 <select
                     v-model="form.model"
-                    class="w-full rounded-lg border border-[#2A2A2F] bg-[#1B1B1E] p-2 text-white focus:ring-2 focus:ring-[#C8FF2E]/60 focus:outline-none"
+                    class="w-full rounded-lg border border-border bg-background p-2 text-foreground focus:ring-2 focus:ring-ring/60 focus:outline-none"
                 >
                     <option
                         v-for="model in props.models"
                         :key="model.id"
                         :value="model.id"
-                        class="bg-[#1B1B1E] text-white"
+                        class="bg-background text-foreground"
                     >
                         {{ model.name }}
                     </option>

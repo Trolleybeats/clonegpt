@@ -150,53 +150,56 @@ onMounted(() => {
     </Head>
     <AppLayout>
         <div class="mx-auto max-w-3xl px-4 py-6 pb-56 sm:pb-48">
-            <h1 class="mb-6 text-2xl text-white">
+            <h1 class="mb-6 text-2xl text-foreground">
                 {{ conversation.title || 'Untitled Conversation' }}
             </h1>
             <div class="mb-6 space-y-4">
                 <div
                     v-for="message in conversation.messages"
                     :key="message.id"
-                    class="rounded border p-4"
+                    class="rounded border border-border p-4"
                     :class="{
-                        'bg-blue-50': message.role === 'user',
-                        'bg-gray-50': message.role === 'assistant',
+                        'bg-primary-soft': message.role === 'user',
+                        'bg-card': message.role === 'assistant',
                     }"
                 >
                     <div
-                        class="mb-2 text-xs font-semibold text-[#4A4A50] uppercase"
+                        class="mb-2 text-xs font-semibold text-muted-foreground uppercase"
                     >
                         {{ message.role === 'user' ? 'Vous' : 'Assistant' }}
                     </div>
-                    <div class="prose max-w-none text-[#4A4A50] prose-invert">
+                    <div class="prose max-w-none text-foreground prose-invert">
                         <div v-html="md.render(message.content || '')"></div>
                     </div>
-                    <p class="mt-2 text-sm text-[#4A4A50]">
+                    <p class="mt-2 text-sm text-muted-foreground">
                         {{ new Date(message.created_at).toLocaleString() }}
                     </p>
                 </div>
-                <div v-if="conversation.messages.length < 1" class="text-white">
+                <div
+                    v-if="conversation.messages.length < 1"
+                    class="text-foreground"
+                >
                     Aucun message dans cette conversation.
                 </div>
             </div>
             <div
                 v-if="thinking || isStreaming"
-                class="mb-4 flex items-center gap-2 rounded border border-[#C8FF2E] bg-yellow-50/10 p-3 text-white"
+                class="mb-4 flex items-center gap-2 rounded border border-border bg-primary-soft p-3 text-foreground"
             >
                 <Loader class="h-4 w-4 animate-spin" />
                 <span>L’IA réfléchit…</span>
             </div>
             <!-- Zone d'affichage du streaming en cours -->
             <div v-if="isStreaming || data" class="mb-6 space-y-3">
-                <div class="rounded border bg-gray-50 p-4">
+                <div class="rounded border border-border bg-card p-4">
                     <div
-                        class="mb-2 text-xs font-semibold text-[#4A4A50] uppercase"
+                        class="mb-2 text-xs font-semibold text-muted-foreground uppercase"
                     >
                         Assistant (en cours)
                     </div>
                     <div
                         v-if="streamedReasoning"
-                        class="mb-3 text-xs text-[#4A4A50]"
+                        class="mb-3 text-xs text-muted-foreground"
                     >
                         <div class="font-semibold">Trace de raisonnement</div>
                         <pre class="whitespace-pre-wrap">{{
@@ -205,7 +208,7 @@ onMounted(() => {
                     </div>
                 </div>
                 <div
-                    class="prose max-w-none rounded border bg-gray-50 p-4 text-[#4A4A50]"
+                    class="prose max-w-none rounded border border-border bg-card p-4 text-foreground"
                 >
                     <div v-html="md.render(streamedContent)"></div>
                 </div>
@@ -214,18 +217,18 @@ onMounted(() => {
             <div class="h-40 sm:h-24"></div>
         </div>
         <div
-            class="fixed right-0 bottom-0 left-0 border-t border-[#2A2A2F] bg-[#121216]/95 shadow-2xl backdrop-blur md:pl-64"
+            class="fixed right-0 bottom-0 left-0 border-t border-border bg-background shadow-2xl backdrop-blur md:pl-64"
         >
             <div class="mx-auto max-w-3xl px-4 py-4">
                 <form @submit.prevent="submit">
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
                         <!-- Colonne gauche: textarea + select + submit -->
                         <div class="flex-1">
-                            <div class="relative mb-4 text-white">
+                            <div class="relative mb-4 text-foreground">
                                 <textarea
                                     v-model="message"
                                     placeholder="Écrire un message..."
-                                    class="w-full rounded-lg border border-[#2A2A2F] bg-[#1B1B1E] p-3 text-white placeholder:text-[#8A8A8F] focus:ring-2 focus:ring-[#C8FF2E]/60 focus:outline-none sm:p-2 sm:pr-28"
+                                    class="w-full rounded-lg border border-border bg-background p-3 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring/60 focus:outline-none sm:p-2 sm:pr-28"
                                     rows="5"
                                     dusk="content"
                                 ></textarea>
@@ -236,7 +239,7 @@ onMounted(() => {
                                         isStreaming ||
                                         !message.trim()
                                     "
-                                    class="absolute right-2 bottom-2 hidden items-center gap-2 rounded-lg bg-[#FF3B30] px-4 py-2 text-white transition-colors hover:bg-[#C8FF2E] hover:text-black disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex"
+                                    class="absolute right-2 bottom-2 hidden items-center gap-2 rounded-lg bg-accent px-4 py-2 text-accent-foreground transition-colors hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex dark:bg-destructive dark:text-destructive-foreground dark:hover:bg-primary dark:hover:text-black"
                                     dusk="send"
                                 >
                                     <Loader
@@ -249,19 +252,19 @@ onMounted(() => {
                             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                 <div class="flex flex-col gap-1">
                                     <label
-                                        class="text-xs font-medium text-[#8A8A8F]"
+                                        class="text-xs font-medium text-muted-foreground"
                                         >Modèle</label
                                     >
                                     <select
                                         v-model="model"
-                                        class="w-full rounded-lg border border-[#2A2A2F] bg-[#1B1B1E] p-2 text-white focus:ring-2 focus:ring-[#C8FF2E]/60 focus:outline-none"
+                                        class="w-full rounded-lg border border-border bg-background p-2 text-foreground focus:ring-2 focus:ring-ring/60 focus:outline-none"
                                         dusk="model-select"
                                     >
                                         <option
                                             v-for="m in props.models"
                                             :key="m.id"
                                             :value="m.id"
-                                            class="bg-[#1B1B1E] text-white"
+                                            class="bg-background text-foreground"
                                         >
                                             {{ m.name }}
                                         </option>
@@ -278,7 +281,7 @@ onMounted(() => {
                                         isStreaming ||
                                         !message.trim()
                                     "
-                                    class="w-full rounded-lg bg-[#FF3B30] px-4 py-2 text-white transition-colors hover:bg-[#C8FF2E] hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                                    class="w-full rounded-lg bg-accent px-4 py-2 text-accent-foreground transition-colors hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-50 dark:bg-destructive dark:text-destructive-foreground dark:hover:bg-primary dark:hover:text-black"
                                 >
                                     <Loader
                                         v-if="isStreaming"
@@ -291,7 +294,8 @@ onMounted(() => {
 
                         <!-- Colonne droite: contrôle de réflexion -->
                         <div class="flex w-full flex-col gap-3 sm:w-64">
-                            <span class="text-xs font-medium text-[#8A8A8F]"
+                            <span
+                                class="text-xs font-medium text-muted-foreground"
                                 >Réflexion</span
                             >
                             <div class="grid grid-cols-2 gap-2">
@@ -305,10 +309,10 @@ onMounted(() => {
                                         ))
                                     "
                                     :class="[
-                                        'rounded-lg border border-[#2A2A2F] px-3 py-2 text-sm transition-colors',
+                                        'rounded-lg border border-border px-3 py-2 text-sm transition-colors',
                                         reasoningEffort === 'low'
-                                            ? 'bg-[#C8FF2E] text-black'
-                                            : 'bg-[#1B1B1E] text-white hover:bg-[#2A2A2F] hover:text-white',
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-background text-foreground hover:bg-primary-soft',
                                     ]"
                                 >
                                     Faible
@@ -323,10 +327,10 @@ onMounted(() => {
                                         ))
                                     "
                                     :class="[
-                                        'rounded-lg border border-[#2A2A2F] px-3 py-2 text-sm transition-colors',
+                                        'rounded-lg border border-border px-3 py-2 text-sm transition-colors',
                                         reasoningEffort === 'medium'
-                                            ? 'bg-[#C8FF2E] text-black'
-                                            : 'bg-[#1B1B1E] text-white hover:bg-[#2A2A2F] hover:text-white',
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-background text-foreground hover:bg-primary-soft',
                                     ]"
                                 >
                                     Moyenne
@@ -341,10 +345,10 @@ onMounted(() => {
                                         ))
                                     "
                                     :class="[
-                                        'rounded-lg border border-[#2A2A2F] px-3 py-2 text-sm transition-colors',
+                                        'rounded-lg border border-border px-3 py-2 text-sm transition-colors',
                                         reasoningEffort === 'high'
-                                            ? 'bg-[#C8FF2E] text-black'
-                                            : 'bg-[#1B1B1E] text-white hover:bg-[#2A2A2F] hover:text-white',
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-background text-foreground hover:bg-primary-soft',
                                     ]"
                                 >
                                     Élevée
@@ -359,10 +363,10 @@ onMounted(() => {
                                         ))
                                     "
                                     :class="[
-                                        'rounded-lg border border-[#2A2A2F] px-3 py-2 text-sm transition-colors',
+                                        'rounded-lg border border-border px-3 py-2 text-sm transition-colors',
                                         reasoningEffort === null
-                                            ? 'bg-[#C8FF2E] text-black'
-                                            : 'bg-[#1B1B1E] text-white hover:bg-[#2A2A2F] hover:text-white',
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-background text-foreground hover:bg-primary-soft',
                                     ]"
                                 >
                                     Aucune

@@ -41,16 +41,19 @@ const currentPath = typeof window !== undefined ? window.location.pathname : '';
 
         <div class="flex flex-col lg:flex-row lg:space-x-12">
             <aside class="w-full max-w-xl lg:w-48">
-                <nav class="flex flex-col space-y-1 space-x-0 text-white">
+                <nav class="flex flex-col space-y-1 space-x-0 text-foreground">
                     <Button
                         v-for="item in sidebarNavItems"
                         :key="toUrl(item.href)"
                         variant="ghost"
                         :class="[
-                            'w-full justify-start',
+                            'w-full justify-start hover:bg-primary-soft',
                             {
-                                'bg-muted': urlIsActive(item.href, currentPath),
-                                'text-black': urlIsActive(
+                                'bg-primary-soft': urlIsActive(
+                                    item.href,
+                                    currentPath,
+                                ),
+                                'text-primary': urlIsActive(
                                     item.href,
                                     currentPath,
                                 ),
