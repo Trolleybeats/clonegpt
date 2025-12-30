@@ -1,2 +1,11 @@
 User-agent: *
-Disallow:
+Disallow: /dashboard
+Disallow: /conversations/
+Disallow: /messages/
+Disallow: /instructions/
+Disallow: /ask
+Disallow: /ask-stream
+Disallow: /settings/
+
+# Sitemap
+Sitemap: https://runai.nathanyh.be/sitemap.xml
